@@ -151,10 +151,13 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # --- LOCAL IMAGES LOGIC (UPDATED TO PNG FORMAT) ---
-cotton_img = get_local_img_uri("cotton.png")
-poly_img = get_local_img_uri("polyester.png")
-viscose_img = get_local_img_uri("viscose.png")
-silk_img = get_local_img_uri("silk.png")
+# --- LOCAL IMAGES LOGIC (UPDATED TO GITHUB RAW URLS) ---
+
+# Ab hum functions nahi, seedha aapke GitHub ki images ka direct live link use kar rahe hain
+cotton_img = "https://raw.githubusercontent.com/ry0943577/rohan_IPL_Dashboard/main/cotton.png"
+poly_img = "https://raw.githubusercontent.com/ry0943577/rohan_IPL_Dashboard/main/polyester.png"
+viscose_img = "https://raw.githubusercontent.com/ry0943577/rohan_IPL_Dashboard/main/viscose.png"
+silk_img = "https://raw.githubusercontent.com/ry0943577/rohan_IPL_Dashboard/main/silk.png"
 
 all_products = [
     {"category": "Cotton", "mill": "Vardhman Textiles", "product": "Cotton Yarn 30s Combed", "price": 245, "score": 96, "orders": "1,240", "delivery": 3, "moq": "500", "img": cotton_img},
