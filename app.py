@@ -23,7 +23,7 @@ def get_local_img_uri(filename):
     if b64:
         ext = "jpeg" if filename.lower().endswith(("jpg", "jpeg")) else "png"
         return f"data:image/{ext};base64,{b64}"
-    # Agar image save karna bhul gaye, toh ye temporary grey box dikhayega
+    # Agar image save karna bhul gaye ya naam galat hua, toh ye temporary grey box dikhayega
     return "https://dummyimage.com/400x400/cccccc/000000&text=Save+Image+As+"+filename
 
 # --- SPLASH SCREEN LOGIC ---
@@ -142,11 +142,11 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# --- LOCAL IMAGES LOGIC ---
-cotton_img = get_local_img_uri("cotton.jpg")
-poly_img = get_local_img_uri("polyester.jpg")
-viscose_img = get_local_img_uri("viscose.jpg")
-silk_img = get_local_img_uri("silk.jpg")
+# --- LOCAL IMAGES LOGIC (UPDATED TO PNG FORMAT) ---
+cotton_img = get_local_img_uri("cotton.png")
+poly_img = get_local_img_uri("polyester.png")
+viscose_img = get_local_img_uri("viscose.png")
+silk_img = get_local_img_uri("silk.png")
 
 all_products = [
     {"category": "Cotton", "mill": "Vardhman Textiles", "product": "Cotton Yarn 30s Combed", "price": 245, "score": 96, "orders": "1,240", "delivery": 3, "moq": "500", "img": cotton_img},
