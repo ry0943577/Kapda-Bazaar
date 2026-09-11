@@ -17,6 +17,15 @@ def get_base64_image(image_path):
 
 logo_base64 = get_base64_image("logo.png")
 
+# Naya function Local Images ke liye
+def get_local_img_uri(filename):
+    b64 = get_base64_image(filename)
+    if b64:
+        ext = "jpeg" if filename.lower().endswith(("jpg", "jpeg")) else "png"
+        return f"data:image/{ext};base64,{b64}"
+    # Agar image save karna bhul gaye, toh ye temporary grey box dikhayega
+    return "https://dummyimage.com/400x400/cccccc/000000&text=Save+Image+As+"+filename
+
 # --- SPLASH SCREEN LOGIC ---
 if 'splash_shown' not in st.session_state:
     st.session_state.splash_shown = True
@@ -37,77 +46,30 @@ if 'splash_shown' not in st.session_state:
     time.sleep(2)
     splash.empty()
 
-# --- CUSTOM CSS (FIXED NAVBAR VISIBILITY & DARK MODE) ---
+# --- CUSTOM CSS ---
 st.markdown("""
 <style>
-/* Base Light Background */
 .stApp { background-color: #EAEDED !important; }
 header[data-testid="stHeader"] { display: none !important; }
 
-/* Forces native text to be Black (excluding spans so we don't break the header) */
-.block-container h1, 
-.block-container h2, 
-.block-container h3, 
-.block-container h4, 
-.block-container h5, 
-.block-container h6,
-.block-container p,
-.block-container label p {
-    color: #0F1111 !important;
+/* Force ALL text to be black (Dark Mode Fix) */
+.block-container h1, .block-container h2, .block-container h3, .block-container h4, .block-container h5, .block-container h6, .block-container p, .block-container label p, .block-container span { 
+    color: #0F1111 !important; 
 }
 
-/* --- HEADER TEXT PROTECTION (Keeps Location & Cart White) --- */
-.amazon-header-container span, .amazon-header-container div {
-    color: #FFFFFF !important;
-}
-.amazon-header-container .text-grey {
-    color: #CCCCCC !important;
-}
-.amazon-header-container .text-amazon-yellow {
-    color: #F3A847 !important;
-}
+/* Tabs Fix */
+button[data-baseweb="tab"] p, button[data-baseweb="tab"] span, button[data-baseweb="tab"] div { color: #131921 !important; font-weight: 800 !important; font-size: 16px !important; }
+button[data-baseweb="tab"][aria-selected="true"] p, button[data-baseweb="tab"][aria-selected="true"] span, button[data-baseweb="tab"][aria-selected="true"] div { color: #B12704 !important; }
+button[data-baseweb="tab"][aria-selected="true"] { border-bottom-color: #FF9900 !important; }
 
-/* Specific Fix for Tabs */
-button[data-baseweb="tab"] p, 
-button[data-baseweb="tab"] span, 
-button[data-baseweb="tab"] div {
-    color: #131921 !important;
-    font-weight: 800 !important;
-    font-size: 16px !important;
-}
-button[data-baseweb="tab"][aria-selected="true"] p, 
-button[data-baseweb="tab"][aria-selected="true"] span, 
-button[data-baseweb="tab"][aria-selected="true"] div {
-    color: #B12704 !important; 
-}
-button[data-baseweb="tab"][aria-selected="true"] { 
-    border-bottom-color: #FF9900 !important; 
-}
-
-/* Fix for Metrics (Dashboard numbers) */
+/* Fix for Metrics */
 [data-testid="stMetricValue"] div, [data-testid="stMetricValue"] { color: #000000 !important; }
 [data-testid="stMetricLabel"] p, [data-testid="stMetricLabel"] { color: #555555 !important; }
 
-/* --- FLOAT THE SEARCH BAR TO THE HEADER --- */
-div[data-testid="stTextInput"]:first-of-type {
-    position: fixed !important;
-    top: 10px !important;
-    left: 24vw !important;
-    width: 48vw !important;
-    z-index: 99999999 !important;
-}
-div[data-testid="stTextInput"] div[data-baseweb="input"] {
-    background-color: #FFFFFF !important;
-    border: 3px solid #FEBD69 !important; 
-    border-radius: 6px !important;
-}
-div[data-testid="stTextInput"] input {
-    color: #0F1111 !important;
-    background-color: #FFFFFF !important;
-    -webkit-text-fill-color: #0F1111 !important;
-    font-size: 15px !important;
-    padding: 12px !important;
-}
+/* Float Search Bar */
+div[data-testid="stTextInput"]:first-of-type { position: fixed !important; top: 10px !important; left: 24vw !important; width: 48vw !important; z-index: 99999999 !important; }
+div[data-testid="stTextInput"] div[data-baseweb="input"] { background-color: #FFFFFF !important; border: 3px solid #FEBD69 !important; border-radius: 6px !important; }
+div[data-testid="stTextInput"] input { color: #0F1111 !important; background-color: #FFFFFF !important; -webkit-text-fill-color: #0F1111 !important; font-size: 15px !important; padding: 12px !important; }
 
 /* Layout Padding */
 .block-container { padding-top: 130px !important; max-width: 100%; padding-left: 2rem !important; padding-right: 2rem !important; }
@@ -115,6 +77,7 @@ div[data-testid="stTextInput"] input {
 /* Header Base Styles */
 .amazon-header-container { position: fixed; top: 0; left: 0; width: 100vw; z-index: 999999; }
 .amazon-header-main { background-color: #131921; height: 60px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-sizing: border-box; }
+.amazon-header-main * { color: white !important; }
 .nav-locator { display: flex; align-items: center; margin-left: 10px; cursor: pointer; padding: 5px; border: 1px solid transparent; }
 .nav-locator:hover { border: 1px solid white; border-radius: 2px; }
 .nav-right { display: flex; gap: 15px; align-items: center; }
@@ -122,8 +85,8 @@ div[data-testid="stTextInput"] input {
 .nav-right > div:hover { border: 1px solid white; border-radius: 2px; }
 
 /* Sub Header */
-.amazon-header-sub { background-color: #232F3E; height: 40px; display: flex; align-items: center; padding: 0 20px; font-family: Arial, sans-serif; font-size: 14px; gap: 15px; box-sizing: border-box; }
-.amazon-header-sub div { cursor: pointer; padding: 5px 8px; border: 1px solid transparent; }
+.amazon-header-sub { background-color: #232F3E; height: 40px; display: flex; align-items: center; padding: 0 20px; color: white; font-family: Arial, sans-serif; font-size: 14px; gap: 15px; box-sizing: border-box; }
+.amazon-header-sub div { cursor: pointer; padding: 5px 8px; color: white !important; border: 1px solid transparent; }
 .amazon-header-sub div:hover { border: 1px solid white; border-radius: 2px; }
 
 /* Product Cards */
@@ -137,11 +100,11 @@ div[data-testid="stTextInput"] input {
 if logo_base64:
     header_logo = f'<img src="data:image/png;base64,{logo_base64}" style="height: 45px; background-color: white; padding: 2px; border-radius: 5px; cursor: pointer;">'
 else:
-    header_logo = '<h2 style="margin: 0; cursor: pointer; font-size: 24px; color: white !important;">🧶 Kapda Bazaar</h2>'
+    header_logo = '<h2 style="margin: 0; cursor: pointer; font-size: 24px;">🧶 Kapda Bazaar</h2>'
 
 
 # ==========================================
-# ACTUAL SEARCH BAR (Floated by CSS to the top)
+# ACTUAL SEARCH BAR
 # ==========================================
 search_query = st.text_input("", placeholder="🔍 Search Kapda Bazaar (Type to find Yarn, Mills, or Specs)", label_visibility="collapsed")
 
@@ -155,7 +118,7 @@ st.markdown(f"""
 <div class="nav-locator">
 <span style="font-size: 20px; margin-right: 5px;">📍</span>
 <div style="line-height: 1.1;">
-<span class="text-grey" style="font-size: 12px;">Deliver to Rohan</span><br>
+<span style="font-size: 12px; color: #CCCCCC !important;">Deliver to Rohan</span><br>
 <span style="font-weight: bold; font-size: 14px;">Rau 453331</span>
 </div>
 </div>
@@ -164,10 +127,10 @@ st.markdown(f"""
 <div style="width: 50vw;"></div> 
 <div class="nav-right">
 <div style="display: flex; align-items: center; gap: 5px;"><span style="font-size: 16px;">🇮🇳</span><span style="font-weight: bold; font-size: 14px;">EN ▾</span></div>
-<div style="line-height: 1.1;"><span class="text-grey" style="font-size: 12px;">Hello, Rohan</span><br><span style="font-weight: bold; font-size: 14px;">Account & Lists ▾</span></div>
-<div style="line-height: 1.1;"><span class="text-grey" style="font-size: 12px;">Returns</span><br><span style="font-weight: bold; font-size: 14px;">& Orders</span></div>
+<div style="line-height: 1.1;"><span style="font-size: 12px;">Hello, Rohan</span><br><span style="font-weight: bold; font-size: 14px;">Account & Lists ▾</span></div>
+<div style="line-height: 1.1;"><span style="font-size: 12px;">Returns</span><br><span style="font-weight: bold; font-size: 14px;">& Orders</span></div>
 <div style="display: flex; align-items: flex-end; font-weight: bold; font-size: 15px;">
-<span style="font-size: 24px; margin-right: 2px;">🛒</span><span class="text-amazon-yellow" style="position: absolute; margin-top: -10px; margin-left: 12px;">0</span>Cart
+<span style="font-size: 24px; margin-right: 2px;">🛒</span><span style="color:#F3A847 !important; position: absolute; margin-top: -10px; margin-left: 12px;">0</span>Cart
 </div>
 </div>
 </div>
@@ -179,11 +142,11 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 
-# --- REAL CATALOG DATA WITH SAFE UNSPLASH IMAGES (No Sunsets or Vaccines!) ---
-cotton_img = "https://images.unsplash.com/photo-1605792657360-e63d3fb66085?q=80&w=400&auto=format&fit=crop"
-silk_img = "https://images.unsplash.com/photo-1584346808796-0359f4f46a7f?q=80&w=400&auto=format&fit=crop"
-poly_img = "https://images.unsplash.com/photo-1515562141207-7a48fb3ce258?q=80&w=400&auto=format&fit=crop"
-viscose_img = "https://images.unsplash.com/photo-1618220179428-22790b46a0eb?q=80&w=400&auto=format&fit=crop"
+# --- LOCAL IMAGES LOGIC ---
+cotton_img = get_local_img_uri("cotton.jpg")
+poly_img = get_local_img_uri("polyester.jpg")
+viscose_img = get_local_img_uri("viscose.jpg")
+silk_img = get_local_img_uri("silk.jpg")
 
 all_products = [
     {"category": "Cotton", "mill": "Vardhman Textiles", "product": "Cotton Yarn 30s Combed", "price": 245, "score": 96, "orders": "1,240", "delivery": 3, "moq": "500", "img": cotton_img},
@@ -209,7 +172,6 @@ tab_marketplace, tab_dashboard, tab_escrow = st.tabs(["🛍️ B2B Marketplace",
 with tab_marketplace:
     filter_col, product_col = st.columns([1, 4])
 
-    # --- FILTERS LOGIC ---
     with filter_col:
         with st.container(border=True):
             st.markdown("### Filters")
@@ -229,7 +191,6 @@ with tab_marketplace:
             del_3 = st.checkbox("Get it in 3 Days (Fast)")
             del_7 = st.checkbox("Get it in 7 Days")
 
-    # --- FILTERING DATA ---
     filtered_products = []
     for p in all_products:
         if search_query and search_query.lower() not in p['product'].lower() and search_query.lower() not in p['mill'].lower() and search_query.lower() not in p['category'].lower():
@@ -243,10 +204,8 @@ with tab_marketplace:
         if "80+" in score_filter and p['score'] < 80: continue
         if del_3 and p['delivery'] > 3: continue
         if del_7 and p['delivery'] > 7: continue
-            
         filtered_products.append(p)
 
-    # --- DISPLAYING PRODUCTS ---
     with product_col:
         if not any([cat_cotton, cat_poly, cat_viscose, cat_silk]):
             st.error("⚠️ You have unchecked all categories. Please select at least one to see products.")
@@ -287,7 +246,6 @@ with tab_dashboard:
             fig = px.line(df_demand, x='Month', y='Demand (Tons)', markers=True)
             fig.update_layout(template="plotly_white", plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font=dict(color='black'))
             fig.add_vrect(x0="Jul", x1="Aug (Predicted)", fillcolor="yellow", opacity=0.2, line_width=0)
-            
             st.plotly_chart(fig, use_container_width=True)
             
         with col2:
