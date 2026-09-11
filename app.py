@@ -8,16 +8,12 @@ import os
 # --- Page Configuration ---
 st.set_page_config(page_title="Kapda Bazaar - B2B Marketplace", layout="wide", initial_sidebar_state="collapsed")
 
-# --- FUNCTION TO LOAD IMAGE (FIXED) ---
+# --- FUNCTION TO LOAD LOGO ---
 def get_base64_image(image_path):
-    # Streamlit Cloud par path ka issue na aaye isliye absolute path use kar rahe hain
     try:
-        # Check relative path first
         if os.path.exists(image_path):
             with open(image_path, "rb") as img_file:
                 return base64.b64encode(img_file.read()).decode()
-        
-        # Check absolute path
         abs_path = os.path.join(os.path.dirname(__file__), image_path)
         if os.path.exists(abs_path):
             with open(abs_path, "rb") as img_file:
@@ -27,15 +23,6 @@ def get_base64_image(image_path):
     return ""
 
 logo_base64 = get_base64_image("logo.png")
-
-# Naya function Local Images ke liye
-def get_local_img_uri(filename):
-    b64 = get_base64_image(filename)
-    if b64:
-        ext = "jpeg" if filename.lower().endswith(("jpg", "jpeg")) else "png"
-        return f"data:image/{ext};base64,{b64}"
-    # Agar image save karna bhul gaye ya naam galat hua, toh ye temporary grey box dikhayega
-    return "https://dummyimage.com/400x400/cccccc/000000&text=Missing+"+filename
 
 # --- SPLASH SCREEN LOGIC ---
 if 'splash_shown' not in st.session_state:
@@ -150,11 +137,11 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# In chaaro lines ko wapas apne function se replace kar do
-cotton_img = get_local_img_uri("cotton.png")
-poly_img = get_local_img_uri("polyester.png")
-viscose_img = get_local_img_uri("viscose.png")
-silk_img = get_local_img_uri("silk.png")
+# --- DIRECT GITHUB RAW LINKS (FIXES IMAGE FORMAT ISSUES) ---
+cotton_img = "https://github.com/ry0943577/Kapda-Bazaar/blob/main/cotton.png?raw=true"
+poly_img = "https://github.com/ry0943577/Kapda-Bazaar/blob/main/polyester.png?raw=true"
+viscose_img = "https://github.com/ry0943577/Kapda-Bazaar/blob/main/viscose.png?raw=true"
+silk_img = "https://github.com/ry0943577/Kapda-Bazaar/blob/main/silk.png?raw=true"
 
 all_products = [
     {"category": "Cotton", "mill": "Vardhman Textiles", "product": "Cotton Yarn 30s Combed", "price": 245, "score": 96, "orders": "1,240", "delivery": 3, "moq": "500", "img": cotton_img},
