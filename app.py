@@ -8,11 +8,22 @@ import os
 # --- Page Configuration ---
 st.set_page_config(page_title="Kapda Bazaar - B2B Marketplace", layout="wide", initial_sidebar_state="collapsed")
 
-# --- FUNCTION TO LOAD IMAGE ---
+# --- FUNCTION TO LOAD IMAGE (FIXED) ---
 def get_base64_image(image_path):
-    if os.path.exists(image_path):
-        with open(image_path, "rb") as img_file:
-            return base64.b64encode(img_file.read()).decode()
+    # Streamlit Cloud par path ka issue na aaye isliye absolute path use kar rahe hain
+    try:
+        # Check relative path first
+        if os.path.exists(image_path):
+            with open(image_path, "rb") as img_file:
+                return base64.b64encode(img_file.read()).decode()
+        
+        # Check absolute path
+        abs_path = os.path.join(os.path.dirname(__file__), image_path)
+        if os.path.exists(abs_path):
+            with open(abs_path, "rb") as img_file:
+                return base64.b64encode(img_file.read()).decode()
+    except Exception as e:
+        pass
     return ""
 
 logo_base64 = get_base64_image("logo.png")
@@ -24,7 +35,7 @@ def get_local_img_uri(filename):
         ext = "jpeg" if filename.lower().endswith(("jpg", "jpeg")) else "png"
         return f"data:image/{ext};base64,{b64}"
     # Agar image save karna bhul gaye ya naam galat hua, toh ye temporary grey box dikhayega
-    return "https://dummyimage.com/400x400/cccccc/000000&text=Save+Image+As+"+filename
+    return "https://dummyimage.com/400x400/cccccc/000000&text=Missing+"+filename
 
 # --- SPLASH SCREEN LOGIC ---
 if 'splash_shown' not in st.session_state:
@@ -102,12 +113,10 @@ if logo_base64:
 else:
     header_logo = '<h2 style="margin: 0; cursor: pointer; font-size: 24px;">🧶 Kapda Bazaar</h2>'
 
-
 # ==========================================
 # ACTUAL SEARCH BAR
 # ==========================================
 search_query = st.text_input("", placeholder="🔍 Search Kapda Bazaar (Type to find Yarn, Mills, or Specs)", label_visibility="collapsed")
-
 
 # --- FULL WIDTH FIXED HEADER ---
 st.markdown(f"""
@@ -140,7 +149,6 @@ st.markdown(f"""
 </div>
 </div>
 """, unsafe_allow_html=True)
-
 
 # --- LOCAL IMAGES LOGIC (UPDATED TO PNG FORMAT) ---
 cotton_img = get_local_img_uri("cotton.png")
