@@ -150,10 +150,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# --- LOCAL IMAGES LOGIC (UPDATED TO PNG FORMAT) ---
 # --- LOCAL IMAGES LOGIC (UPDATED TO GITHUB RAW URLS) ---
-
-# Ab hum functions nahi, seedha aapke GitHub ki images ka direct live link use kar rahe hain
 cotton_img = "https://raw.githubusercontent.com/ry0943577/Kapda-Bazaar/main/cotton.png"
 poly_img = "https://raw.githubusercontent.com/ry0943577/Kapda-Bazaar/main/polyester.png"
 viscose_img = "https://raw.githubusercontent.com/ry0943577/Kapda-Bazaar/main/viscose.png"
